@@ -1,0 +1,98 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td { margin:0; padding:0; }
+body {font-family:"微软雅黑"; font-size:12px/1.5em; color: #222222; position:relative;}
+h1, h2, h3, h4, h5, h6 { font-size:1em; }
+*{ word-wrap: break-word;}
+a, a:hover { color:#333; text-decoration:none; }
+a:hover { color:#839cff; }
+fieldset, img { border:none; }
+img{ border:0; vertical-align:middle;}
+legend { display:none; }
+ol, ul, li { list-style:none; }
+em, strong, cite, th { font-style:normal; font-weight:400; }
+input, textarea, select, button { font:12px Verdana, Helvetica, Arial, sans-serif; }
+table { border-collapse:collapse; }
+html { overflow:-moz-scrollbars-vertical; }
+/* common style */
+.clearfix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+.clearfix { display:inline-block; }/*\*/
+.clearfix { display:block; } /**/
+.cl{ clear:both;}
+
+html,body{padding: 0;margin: 0; color: #222222;}
+
+iframe{
+	width: 100%;
+	border: none;
+	overflow-x:hidden; overflow-y:auto;
+}
+
+.iframe-top{
+	margin-bottom: 20px;
+	height: 160px;
+}
+.cl{
+	clear: both;
+}
+.msk{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,.7);
+	position: fixed;
+	top: 0;
+	z-index: 9999;
+	display: none;
+}
+.choose-all{
+	position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+.choose-all input{
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
+}
+
+/*提示*/
+.help-block{
+	opacity: 0;
+}
+
+/*提示语+*/
+.help-block { position: absolute;color: #737373; color: red; font-size: 11px; bottom: -22px; opacity:0;}
+.help-block img{margin-right: 5px;margin-top: -3px;}
+
+
+/*提示浮框*/
+.message-alert{
+	width: 300px;
+	background-color: #fff;
+	border-radius: 10px;
+	padding: 30px 0;
+	text-align: center;
+	position: fixed;
+	left: 300px;
+	top: 300px;
+	z-index: 10000;
+}
+.message-alert p{
+	padding: 0 20px;
+	margin-bottom: 20px;
+}
+.message-alert .btn-close{
+	position: absolute;
+    right: -11px;
+    top: -10px;
+    z-index: 100;
+    cursor: pointer;
+}
+.message-alert .btn-ok{
+
+	margin-top: 30px;
+	background-color: #839cff;
+	padding: 5px 20px;
+	color: #fff;
+	border-radius: 7px;
+}
+
+button{cursor: pointer;}
