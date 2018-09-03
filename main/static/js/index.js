@@ -2,7 +2,8 @@
  * Created by 2017-11-22
  */
 
- var lines = [];
+var lines = [];
+var layout = {title : "Simple Javascript Graph"};
 
 String.prototype.format = function() {
     var args = arguments;
@@ -57,6 +58,5 @@ function selectFolder(e) {
 TESTER = document.getElementById('tester');
 
 function plot(data) {
-    Plotly.plot( TESTER, data, { 
-        margin: { t: 0 } } );
+    Plotly.plot( TESTER, data, layout);
 }
