@@ -30,6 +30,7 @@ function selectFile(obj) {
             }
         }
     };
+    console.log($(obj));
     $(obj).parent().ajaxSubmit(options);
 }
 

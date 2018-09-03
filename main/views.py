@@ -27,7 +27,4 @@ def upload_file():
     content = np.load(c)
     app.logger.info(content)
 
-    name, lstm_shape, network_data, enc_length, order = readLog(content)
-
-    return json.dumps({"type": name, "shape": lstm_shape, "index": network_data.keys(), "enc": enc_length},
-                      ensure_ascii=False)
+    return json.dumps({}, ensure_ascii=False)

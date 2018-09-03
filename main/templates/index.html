@@ -20,10 +20,10 @@
 <main class="packages-list-container" id="all-packages">
 
 <button onclick="$('#main-container').empty()">clear</button>
-
-<input id="FileUpload" name="log" type="file" onchange="selectFile(event)">
+<form class="uploadLog" method="post" enctype="multipart/form-data">
+<input id="FileUpload" name="log" type="file" onchange="selectFile(this)">
 <input type="file" id="FolderUpload" onchange="selectFolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple />
-
+</form>
 
 <div id="tester" style="width:90%;height:250px;">
     
