@@ -12,16 +12,29 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>
-                Experiments visualization
+                LSTM DEBUG
             </h1>
         </div>
     </div>
 </header>
 <main class="packages-list-container" id="all-packages">
 
-    <a href="/realtime.html">real time monitor(TODO)</a>
-    <a href="/view.html">keep track of experiments results</a>
+<button onclick="$('#main-container').empty()">clear</button>
 
+<input id="FileUpload" name="log" type="file" onchange="selectFile(this)">
+<input type="file" id="FolderUpload" onchange="selectFolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple />
+
+
+
+<div class="container-fluid" id="main-container">
+	<div class="container-fluid" id="index-container">
+		<input type="text">
+	</div>
+
+	<div id="tester" class="container-fluid" style="width:90%;height:800px;">
+	    
+	</div>
+</div>
 </main>
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
 <script src="https://cdn.bootcss.com/plotly.js/1.38.0/plotly.min.js"></script>

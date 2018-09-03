@@ -2,6 +2,9 @@
  * Created by 2017-11-22
  */
 
+var lines = [];
+var layout = {title : "Simple Javascript Graph"};
+
 String.prototype.format = function() {
     var args = arguments;
     return this.replace(/\{(\d+)\}/g,
@@ -28,6 +31,18 @@ function selectFile(obj) {
             if (data.error) {
                 alert(data.error);
             }
+            var np_list = data.data;
+            // [{  x: x,
+            //     y: y }]
+            var curve = {};
+            var length = np_list.length;
+            var step = 100;
+            curve.x = Array(length).fill().map((item, index) => {
+                return index * step;
+            })
+            curve.y = np_list;
+            lines.push(curve)
+            plot(lines)
         }
     };
     console.log($(obj));
@@ -43,7 +58,6 @@ function selectFolder(e) {
 
 TESTER = document.getElementById('tester');
 
-Plotly.plot( TESTER, [{
-    x: [1, 2, 3, 4, 5],
-    y: [1, 2, 4, 8, 16] }], { 
-    margin: { t: 0 } } );
+function plot(data) {
+    Plotly.plot( TESTER, data, layout);
+}
