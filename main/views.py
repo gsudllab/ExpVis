@@ -80,8 +80,8 @@ def get_all_npy(sub):
             continue
         sub_lists = os.listdir(os.path.join(directory, e))
         for sub in sub_lists:
-            if e.endswith(".npy"):
-                filter_list.append("npy/" + e)
+            if sub.endswith(".npy"):
+                filter_list.append("npy/" + sub)
     return filter_list
 
 
@@ -110,7 +110,8 @@ def get_result_array():
     file_name = request.json.get("file")
     full_name = os.path.join(os.environ["HOME"], "project/results", file_name)
     array = np.load(full_name)
-    return json.dumps({"data": {"x": range(len(array)), "y":list(array)}}, ensure_ascii=False)
+    x = [e for e in range(len(array))]
+    return json.dumps({"data": {"x": x, "y":list(array)}}, ensure_ascii=False)
 
 
 @app.route('/uploadFile', methods=['POST'])
