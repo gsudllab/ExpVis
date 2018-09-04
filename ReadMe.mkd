@@ -1,6 +1,6 @@
 # ExpVis
 
-![ExpVis](https://raw.githubusercontent.com/sndnyang/zhimind/master/UI.png)
+![ExpVis](https://raw.githubusercontent.com/sndnyang/ExpVis/master/UI.png)
 
 editable experiment visualization
 
