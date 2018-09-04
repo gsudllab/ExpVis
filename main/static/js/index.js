@@ -55,9 +55,3 @@ function selectFolder(e) {
     var folder = relativePath.split("/");
     alert(folder[0]);
 }
-
-TESTER = document.getElementById('tester');
-
-function plot(data) {
-    Plotly.plot( TESTER, data, layout);
-}
