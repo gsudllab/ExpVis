@@ -1,0 +1,7 @@
+# ExpVis
+
+![ExpVis](https://raw.githubusercontent.com/sndnyang/zhimind/master/UI.png)
+
+editable experiment visualization
+
+only support lines/curves
