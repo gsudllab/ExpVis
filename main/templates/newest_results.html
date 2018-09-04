@@ -1,23 +1,49 @@
 {% extends "layout.html" %}
 {% block body %}
-
+    <style>
+        .vis_sidebar {
+            border-right: 0.5px solid;
+        }
+        .vis_canvas {
+            border: 1px;
+        }
+    </style>
+    <script>
+        
+    </script>
     <link rel="stylesheet" href="/static/css/main.css">
     <link href="/static/css/ListTabMenu.css" rel="stylesheet">
-    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-    <link href="//cdn.bootcss.com/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" rel="stylesheet">
 
-    <script src="//cdn.bootcss.com/angular.js/1.2.19/angular.min.js"></script>
-    <script src="//cdn.bootcss.com/d3/3.5.14/d3.min.js"></script>
-    <script src="//cdn.bootcss.com/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
-
-    <script src="/static/js/app.js"></script>
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/view.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     {% for i in range(sections|length) %}
         <input id="tab{{ i+1 }}" type="radio" name="tabs" checked="">
         <label for="tab{{ i+1 }}">{{ sections[i][0] }}</label>
     {% endfor %}
     {% for i in range(sections|length) %}
-        <section id="content{{ i+1 }}">
+        <section id="content{{ i+1 }}" style="height: 100%; padding: 0;">
+            <div style="height: 100%; padding: 10px 0;" class="col-xs-1 vis_sidebar side_container">
+                <div style="height: 50%; padding: 10px 0;" class="col-xs-12 vis_sidebar size">
+                    {% for j in range(sections[i][1]|length) %}
+                        <a id="size{{ j }}" class="btn btn-default col-md-12" href="javascript:void(0)" role="button"
+                        onclick="choose_directory(this)">{{ sections[i][1][j][0] }}</a>
+                    {% endfor %}
+                </div>
+                <div style="height: 50%; padding: 10px 0;" class="col-xs-12 vis_sidebar method">
+                </div>
+            </div>
+            <div style="height: 100%; padding: 20px 0;" class="col-xs-2 vis_sidebar exp">
+            </div>
+            <div style="height: 100%; padding: 20px 0;" class="col-xs-2 vis_sidebar files">
+            </div>
+            <div style="height: 100%; padding: 20px 0;" class="col-xs-7 vis_canvas">
+                <div>
+                    <div class="btn btn-default" onclick="remove_chart()">clear</div>
+                </div>
+                <div class="canvas"></div>
+            </div>
         </section>
     {% endfor %}
 {% endblock %}
