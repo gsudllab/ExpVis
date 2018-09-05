@@ -20,13 +20,11 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/view.html')
-def view():
+def walk_results_dir():
     directory = os.path.join(os.environ["HOME"], "project/results")
     lists = os.listdir(directory)
     filter_list = []
     for e in lists:
-        print(e)
         full_name = os.path.join(directory, e)
         if not os.path.isdir(full_name):
             continue
@@ -34,10 +32,86 @@ def view():
             continue
         if not e.startswith("dataset="):
             continue
-        sub_dir = os.listdir(full_name)
-        filter_list.append([e, sub_dir])
+        sub_dirs = []
+        for sub_dir in os.listdir(full_name):
+            sub_name = os.path.join(full_name, sub_dir)
+            sub_sub_dirs = []
+            for sub_sub in os.listdir(sub_name):
+                if "running" in sub_sub:
+                    continue
+                sub_sub_dirs.append(sub_sub)
+            if len(sub_sub_dirs):
+                sub_dirs.append([sub_dir, sub_sub_dirs])
+        filter_list.append([e, sub_dirs])
+    return filter_list
 
+
+@app.route('/view.html')
+def view():
+    filter_list = walk_results_dir()
     return render_template('newest_results.html', sections=filter_list)
+
+
+@app.route('/results_tree')
+def get_results_tree():
+    filter_list = walk_results_dir()
+    return json.dumps({"data": filter_list}, ensure_ascii=False)
+
+
+def get_all_experiment(sub):
+    directory = os.path.join(os.environ["HOME"], "project/results", sub)
+    lists = sorted(os.listdir(directory))
+    filter_list = []
+    for e in lists:
+        if not e.endswith("running"):
+            filter_list.append(e)
+    return filter_list
+
+
+def get_all_npy(sub):
+    directory = os.path.join(os.environ["HOME"], "project/results", sub)
+    lists = sorted(os.listdir(directory))
+    filter_list = []
+    for e in lists:
+        if e.endswith(".npy"):
+            filter_list.append(e)
+    for e in lists:
+        if e != "npy":
+            continue
+        sub_lists = sorted(os.listdir(os.path.join(directory, e)))
+        for sub in sub_lists:
+            if sub.endswith(".npy"):
+                filter_list.append("npy/" + sub)
+    return filter_list
+
+
+@app.route('/result_exp', methods=['POST'])
+def get_experiments():
+    directory = request.json.get("dir", None)
+    if directory is None:
+        return json.dumps({"error": "not get"}, ensure_ascii=False)
+
+    filter_list = get_all_experiment(directory)
+    return json.dumps({"data": filter_list}, ensure_ascii=False)
+
+
+@app.route('/result_files', methods=['POST'])
+def get_result_files_list():
+    directory = request.json.get("dir", None)
+    if directory is None:
+        return json.dumps({"error": "not get"}, ensure_ascii=False)
+
+    filter_list = get_all_npy(directory)
+    return json.dumps({"data": filter_list}, ensure_ascii=False)
+
+
+@app.route('/get_result_array', methods=['POST'])
+def get_result_array():
+    file_name = request.json.get("file")
+    full_name = os.path.join(os.environ["HOME"], "project/results", file_name)
+    array = np.load(full_name)
+    x = [e for e in range(len(array))]
+    return json.dumps({"data": {"x": x, "y":list(array)}}, ensure_ascii=False)
 
 
 @app.route('/uploadFile', methods=['POST'])

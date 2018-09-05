@@ -45,6 +45,7 @@ function selectFile(obj) {
             plot(lines)
         }
     };
+    console.log($(obj));
     $(obj).parent().ajaxSubmit(options);
 }
 
@@ -53,10 +54,4 @@ function selectFolder(e) {
     var relativePath = theFiles[0].webkitRelativePath;
     var folder = relativePath.split("/");
     alert(folder[0]);
-}
-
-TESTER = document.getElementById('tester');
-
-function plot(data) {
-    Plotly.plot( TESTER, data, layout);
 }
