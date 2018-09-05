@@ -194,7 +194,11 @@ function draw_file(obj) {
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
             plot_data[section].push(list);
-            Plotly.newPlot(canvas[0], plot_data[section], layout, {editable: true});
+            if (contain_flag == false) {
+                Plotly.newPlot(canvas[0], plot_data[section], layout, {editable: true});
+            } else {
+                Plotly.plot(canvas[0], [list], layout, {editable: true});
+            }
         }
     });
 }

@@ -60,7 +60,7 @@ def get_results_tree():
 
 def get_all_experiment(sub):
     directory = os.path.join(os.environ["HOME"], "project/results", sub)
-    lists = os.listdir(directory)
+    lists = sorted(os.listdir(directory))
     filter_list = []
     for e in lists:
         if not e.endswith("running"):
@@ -70,7 +70,7 @@ def get_all_experiment(sub):
 
 def get_all_npy(sub):
     directory = os.path.join(os.environ["HOME"], "project/results", sub)
-    lists = os.listdir(directory)
+    lists = sorted(os.listdir(directory))
     filter_list = []
     for e in lists:
         if e.endswith(".npy"):
@@ -78,7 +78,7 @@ def get_all_npy(sub):
     for e in lists:
         if e != "npy":
             continue
-        sub_lists = os.listdir(os.path.join(directory, e))
+        sub_lists = sorted(os.listdir(os.path.join(directory, e)))
         for sub in sub_lists:
             if sub.endswith(".npy"):
                 filter_list.append("npy/" + sub)
