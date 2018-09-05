@@ -21,39 +21,38 @@ function get_results_dir_tree() {
 }
 
 function dir_button(level_name, id, name) {
-    let template = '<option><a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_exp(this)">{2}</a></option>';
+    let template = '<a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_exp(this)">{2}</a>';
     return template.format(level_name, id, name);
 }
 
 function exp_button(level_name, id, name) {
-    let template = '<option><a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_file(this)">{2}</a></option>';
+    let template = '<a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_file(this)">{2}</a>';
     return template.format(level_name, id, name);
 }
 
 function file_button(level_name, id, name) {
-    let template = '<option><a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="draw_file(this)">{2}</a></option>';
+    let template = '<a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="draw_file(this)">{2}</a>';
     return template.format(level_name, id, name);
 }
 
-function choose_method(obj) {
-    console.log("choose method")
-    let size_id = obj.value.substring(4);
+function choose_directory(obj) {
+    let size_id = obj.id.substring(4);
     let ele = $(obj);
     let size = ele.html();
+    size_chosen = size;
     let section = $("input:checked")[0].id;
     let dataset_id = section.substring(3);
     let dataset = $("label[for=tab"+dataset_id+"]").html();
     dataset_chose = dataset;
     id = dataset_id;
-    size_chosen = dir_tree[id-1][1][size_id][0];
 
     var name = dir_tree[id-1][0];
     var sub = dir_tree[id-1][1][size_id][1];
-    var method_div = $("#content" + dataset_id).children("div.side_container").children(".method")
+    var method_div = $("#content" + dataset_id).children("div.side_container").children("div.method")
     method_div.empty();
-    var file_div = $("#content" + dataset_id).children(".exp")
+    var file_div = $("#content" + dataset_id).children("div.exp")
     file_div.empty();
-    var file_div = $("#content" + dataset_id).children(".files")
+    var file_div = $("#content" + dataset_id).children("div.files")
     file_div.empty();
     for (let i in sub) {
         let temp = dir_button(size_id + "-method", i, sub[i]);
@@ -78,9 +77,9 @@ function choose_exp(obj) {
 
     var dir = "{0}/{1}/{2}".format(data_name, size_name, method);
     console.log(dir);
-    var file_div = $("#content" + dataset_id).children(".files")
+    var file_div = $("#content" + dataset_id).children("div.files")
     file_div.empty();
-    var exp_div = $("#content" + dataset_id).children(".exp")
+    var exp_div = $("#content" + dataset_id).children("div.exp")
     exp_div.empty();
     $.ajax({
         method: "post",
@@ -114,7 +113,7 @@ function choose_file(obj) {
 
     var dir = "{0}/{1}/{2}/{3}".format(data_name, size_name, method_chosen, exp);
     console.log(dir);
-    let file_div = $("#content" + dataset_id).children(".files")
+    let file_div = $("#content" + dataset_id).children("div.files")
     file_div.empty();
     $.ajax({
         method: "post",

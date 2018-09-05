@@ -25,15 +25,14 @@
     {% for i in range(sections|length) %}
         <section id="content{{ i+1 }}" style="height: 100%; padding: 0;">
             <div style="height: 100%; padding: 10px 0;" class="col-xs-1 vis_sidebar side_container">
-                <!-- <div style="height: 50%; padding: 10px 0;" class="col-xs-12 vis_sidebar size"> -->
-                <select style="padding: 10px 0;" class="col-xs-12 vis_sidebar size" onchange="choose_method(this)">
-                {% for j in range(sections[i][1]|length) %}
-                    <option value="size{{ j }}">{{ sections[i][1][j][0] }}</option>
-                {% endfor %}
-                </select>
-                <!-- </div> -->
-                <select style="padding: 10px 0;" class="col-xs-12 vis_sidebar method">
-                </select>
+                <div style="height: 50%; padding: 10px 0;" class="col-xs-12 vis_sidebar size">
+                    {% for j in range(sections[i][1]|length) %}
+                        <a id="size{{ j }}" class="btn btn-default col-md-12" href="javascript:void(0)" role="button"
+                        onclick="choose_directory(this)">{{ sections[i][1][j][0] }}</a>
+                    {% endfor %}
+                </div>
+                <div style="height: 50%; padding: 10px 0;" class="col-xs-12 vis_sidebar method">
+                </div>
             </div>
             <div style="height: 100%; padding: 20px 0;" class="col-xs-2 vis_sidebar exp">
             </div>
