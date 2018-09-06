@@ -68,7 +68,6 @@ function choose_exp(obj) {
     let section = $("input:checked")[0].id;
     let dataset_id = section.substring(3);
     let dataset = $("label[for=tab"+dataset_id+"]").html();
-    plot_data[section] = [];
 
     method_chosen = method;
 
@@ -179,7 +178,6 @@ function draw_file(obj) {
             var canvas = $("#content" + dataset_id).children("div.vis_canvas").children("div.canvas");
             var layout = {
                 title: "{0} on {1}".format(data_name, size_chosen),
-                legend: {traceorder: 'reversed'},
                 margin: {
                     b: 50,
                     t: 50
