@@ -68,6 +68,8 @@ function choose_exp(obj) {
     let section = $("input:checked")[0].id;
     let dataset_id = section.substring(3);
     let dataset = $("label[for=tab"+dataset_id+"]").html();
+    if (!(section in plot_data))
+        plot_data[section] = [];
 
     method_chosen = method;
 
