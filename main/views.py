@@ -118,7 +118,10 @@ def get_result_array():
     x = np.arange(len(array))
     if "queries" in params:
         x *= params["queries"]
-    return json.dumps({"data": {"x": list(x), "y":list(array)}}, ensure_ascii=False)
+    l_x = []
+    for e in x:
+        l_x.append(int(e))
+    return json.dumps({"data": {"x": l_x, "y":list(array)}}, ensure_ascii=False)
 
 
 @app.route('/uploadFile', methods=['POST'])
