@@ -197,8 +197,8 @@ function draw_file(obj) {
             if (contain_flag == false) {
                 Plotly.newPlot(canvas[0], plot_data[section], layout, {editable: true});
             } else {
-                Plotly.purge(canvas[0]);
-                Plotly.plot(canvas[0], plot_data[section], layout, {editable: true});
+                
+                Plotly.plot(canvas[0], [list], layout, {editable: true});
             }
         }
     });
