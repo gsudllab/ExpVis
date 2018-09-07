@@ -68,7 +68,8 @@ function choose_exp(obj) {
     let section = $("input:checked")[0].id;
     let dataset_id = section.substring(3);
     let dataset = $("label[for=tab"+dataset_id+"]").html();
-    plot_data[section] = [];
+    if (!(section in plot_data))
+        plot_data[section] = [];
 
     method_chosen = method;
 
@@ -179,7 +180,6 @@ function draw_file(obj) {
             var canvas = $("#content" + dataset_id).children("div.vis_canvas").children("div.canvas");
             var layout = {
                 title: "{0} on {1}".format(data_name, size_chosen),
-                legend: {traceorder: 'reversed'},
                 margin: {
                     b: 50,
                     t: 50
@@ -197,8 +197,8 @@ function draw_file(obj) {
             if (contain_flag == false) {
                 Plotly.newPlot(canvas[0], plot_data[section], layout, {editable: true});
             } else {
-                Plotly.purge(canvas[0]);
-                Plotly.plot(canvas[0], plot_data[section], layout, {editable: true});
+                
+                Plotly.plot(canvas[0], [list], layout, {editable: true});
             }
         }
     });

@@ -109,9 +109,19 @@ def get_result_files_list():
 def get_result_array():
     file_name = request.json.get("file")
     full_name = os.path.join(os.environ["HOME"], "project/results", file_name)
+    param_file = os.path.join(os.path.dirname(full_name), "params.json")
+    params = {}
+    if os.path.isfile(param_file):
+        with open(param_file) as fp:
+            params = json.load(fp)
     array = np.load(full_name)
-    x = [e for e in range(len(array))]
-    return json.dumps({"data": {"x": x, "y":list(array)}}, ensure_ascii=False)
+    x = np.arange(len(array))
+    if "queries" in params:
+        x *= params["queries"]
+    l_x = []
+    for e in x:
+        l_x.append(int(e))
+    return json.dumps({"data": {"x": l_x, "y":list(array)}}, ensure_ascii=False)
 
 
 @app.route('/uploadFile', methods=['POST'])
