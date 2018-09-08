@@ -5,143 +5,97 @@ var dataset_chose = null;
 var size_chosen = null;
 var method_chosen = null;
 var exp_chosen = null;
-var plot_data = {};
+var plot_data = [];
+var plot_index = [];
 var sub_names = [];
 
-function get_results_dir_tree() {
-    $.ajax({
-        method: "get",
-        url : "/results_tree",
-        contentType: 'application/json',
-        dataType: "json",
-        success : function (data){
-            dir_tree = data.data;
-        }
-    });
+function dir_button(level, name) {
+    var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
+    return template.format(level, name, name);
 }
 
-function dir_button(level_name, id, name) {
-    let template = '<a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_exp(this)">{2}</a>';
-    return template.format(level_name, id, name);
+function file_button(level, name) {
+    var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="draw_file(this, {0})">{1}</a>';
+    return template.format(level, name);
 }
 
-function exp_button(level_name, id, name) {
-    let template = '<a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_file(this)">{2}</a>';
-    return template.format(level_name, id, name);
-}
-
-function file_button(level_name, id, name) {
-    let template = '<a id="{0}-{1}" class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="draw_file(this)">{2}</a>';
-    return template.format(level_name, id, name);
-}
-
-function choose_directory(obj) {
-    let size_id = obj.id.substring(4);
-    let ele = $(obj);
-    let size = ele.html();
-    size_chosen = size;
-    let section = $("input:checked")[0].id;
-    let dataset_id = section.substring(3);
-    let dataset = $("label[for=tab"+dataset_id+"]").html();
-    dataset_chose = dataset;
-    id = dataset_id;
-
-    var name = dir_tree[id-1][0];
-    var sub = dir_tree[id-1][1][size_id][1];
-    var method_div = $("#content" + dataset_id).children("div.side_container").children("div.method")
-    method_div.empty();
-    var file_div = $("#content" + dataset_id).children("div.exp")
-    file_div.empty();
-    var file_div = $("#content" + dataset_id).children("div.files")
-    file_div.empty();
-    for (let i in sub) {
-        let temp = dir_button(size_id + "-method", i, sub[i]);
-        method_div.append(temp);
+function choose_directory(obj, level, name) {
+    var spans = $("#dir_path").children("span");
+    var levels = spans.children("select");
+    var path = "."
+    for (var i = 1; i < level; i++) {
+        path += "/" + $(levels[i-1]).val();
     }
-}
-
-function choose_exp(obj) {
-    let ele = $(obj);
-    let size_id = obj.id.split("-")[0];
-    let method_id = obj.id.split("-")[2];
-    let method = ele.html();
-    let section = $("input:checked")[0].id;
-    let dataset_id = section.substring(3);
-    let dataset = $("label[for=tab"+dataset_id+"]").html();
-    if (!(section in plot_data))
-        plot_data[section] = [];
-
-    method_chosen = method;
-
-    let data_name = dir_tree[id-1][0];
-    let size_name = dir_tree[id-1][1][size_id][0];
-
-    var dir = "{0}/{1}/{2}".format(data_name, size_name, method);
-    console.log(dir);
-    var file_div = $("#content" + dataset_id).children("div.files")
-    file_div.empty();
-    var exp_div = $("#content" + dataset_id).children("div.exp")
-    exp_div.empty();
+    if (name == "") {
+        path += "/" + $(obj).val();
+    } else {
+        $(levels[level-1]).val(name);
+        path += "/" + name;
+    }
+    console.log(path);
     $.ajax({
         method: "post",
-        url : "/result_exp",
+        url : "/get_lists_in_dir.html",
         contentType: 'application/json',
         dataType: "json",
-        data: JSON.stringify({"dir": dir}),
+        data: JSON.stringify({"dir": path}),
         success : function (data){
             var list = data.data;
             global_temp_data = data.data
-            for (var i in list) {
-                var temp = exp_button(size_id + "-" + method_id + "-exp", i, list[i]);
-                exp_div.append(temp)
+            $("#sub_files").empty();
+            for (var i in list[0]) {
+                var temp = file_button(level+1, list[0][i]);
+                $("#sub_files").append(temp)
             }
-        }
-    });
-
-}
-
-function choose_file(obj) {
-    let ele = $(obj);
-    let size_id = obj.id.split("-")[0];
-    let exp = ele.html();
-    exp_chosen = exp;
-    let section = $("input:checked")[0].id;
-    let dataset_id = section.substring(3);
-    let dataset = $("label[for=tab"+dataset_id+"]").html();
-
-    let data_name = dir_tree[id-1][0];
-    let size_name = dir_tree[id-1][1][size_id][0];
-
-    var dir = "{0}/{1}/{2}/{3}".format(data_name, size_name, method_chosen, exp);
-    console.log(dir);
-    let file_div = $("#content" + dataset_id).children("div.files")
-    file_div.empty();
-    $.ajax({
-        method: "post",
-        url : "/result_files",
-        contentType: 'application/json',
-        dataType: "json",
-        data: JSON.stringify({"dir": dir}),
-        success : function (data){
-            var list = data.data;
-            global_temp_data = data.data
-            for (var i in list) {
-                var temp = file_button(size_id + "-file", i, list[i]);
-                file_div.append(temp)
+            $("#sub_dirs").empty();
+            for (var i in list[1]) {
+                var temp = dir_button(level+1, list[1][i]);
+                $("#sub_dirs").append(temp)
             }
+
+            for (var i = level; i < spans.length; i++) {
+                var span = spans[i];
+                span.remove();
+            }
+            var new_span = $("<span></span");
+            var new_select = $("<select></select>");
+            new_select.attr("onchange", "choose_directory(this, {0}, '')".format(level+1));
+            new_select.append('<option disabled selected value="0">default</option>"');
+            for (var i in list[1]) {
+                new_select.append('<option value="{0}">{1}</option>'.format(list[1][i], list[1][i]));
+            }
+            new_span.append(new_select);
+            new_span.append("<span>/</span>")
+            $("#dir_path").append(new_span);
         }
     });
 }
 
-function draw_file(obj) {
-    let ele = $(obj);
-    let file = ele.html();
-    let section = $("input:checked")[0].id;
-    let dataset_id = section.substring(3);
+function draw_file(obj, level) {
+    var spans = $("#dir_path").children("span");
+    var levels = spans.children("select");
+    var path = ".";
+    var data_name = "";
+    var size = "";
+    for (var i = 1; i < level; i++) {
+        path += "/" + $(levels[i-1]).val();
+        var parts = $(levels[i-1]).val().split("=");
+        if (parts.length != 2)
+            continue;
+        switch(parts[0]) {
+            case "dataset":
+                data_name = parts[1];
+                break;
+            case "size":
+                size = parts[1];
+                break;
+        }
+    }
+    path += "/" + $(obj).html();
+    var ele = $(obj);
+    var file = ele.html();
+    var file_path = path;
 
-    let data_name = dir_tree[id-1][0];
-
-    var file_path = "{0}/{1}/{2}/{3}/{4}".format(data_name, size_chosen, method_chosen, exp_chosen, file);
     var file_name = file.split("/")[file.split("/").length-1];
     var file_parts = file_name.split("_")
     var metric = ""
@@ -177,9 +131,9 @@ function draw_file(obj) {
             var list = data.data;
             global_temp_data = list;
             
-            var canvas = $("#content" + dataset_id).children("div.vis_canvas").children("div.canvas");
+            var canvas = $("div.vis_canvas").children("div.canvas");
             var layout = {
-                title: "{0} on {1}".format(data_name, size_chosen),
+                title: "{0} on {1}".format(data_name, size),
                 margin: {
                     b: 50,
                     t: 50
@@ -193,24 +147,30 @@ function draw_file(obj) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
-            plot_data[section].push(list);
+            var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
+            $(".curves").append(new_curve);
+            plot_data.push(list);
             if (contain_flag == false) {
-                Plotly.newPlot(canvas[0], plot_data[section], layout, {editable: true});
+
+                plotted_data = [];
+                for (var i = 0; i < $("checkbox").length; i++) {
+                    if ($("checkbox").attr('checked')) {
+                        plotted_data.append(plot_data[i]);
+                    }
+                }
+                Plotly.newPlot(canvas[0], plotted_data, layout, {editable: true});
             } else {
-                
                 Plotly.plot(canvas[0], [list], layout, {editable: true});
             }
+
         }
     });
 }
 
 function remove_chart() {
-    var section = $("input:checked")[0].id;
-    let dataset_id = section.substring(3);
-    var canvas = $("#content" + dataset_id).children("div.vis_canvas").children("div.canvas");
-    plot_data[section] = [];
+    var canvas = $("div.vis_canvas").children("div.canvas");
+    plot_data = [];
     sub_names = [];
+    $(".curves").empty();
     Plotly.purge(canvas[0]);
 }
-
-get_results_dir_tree();

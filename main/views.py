@@ -20,41 +20,36 @@ def index():
     return render_template('index.html')
 
 
-def walk_results_dir():
-    directory = os.path.join(os.environ["HOME"], "project/results")
-    lists = os.listdir(directory)
-    filter_list = []
+def walk_results_dir(dir_path):
+    directory = os.path.join(os.environ["HOME"], "project/results", dir_path)
+    filter_list = [[], []]
+    if not os.path.isdir(directory):
+        return filter_list
+    lists = sorted(os.listdir(directory))
     for e in lists:
         full_name = os.path.join(directory, e)
-        if not os.path.isdir(full_name):
+        if "copy" in e or "running" in e or ".png" in e or "txt" in e:
             continue
-        if e.endswith(" (copy)"):
-            continue
-        if not e.startswith("dataset="):
-            continue
-        sub_dirs = []
-        for sub_dir in os.listdir(full_name):
-            sub_name = os.path.join(full_name, sub_dir)
-            sub_sub_dirs = []
-            for sub_sub in os.listdir(sub_name):
-                if "running" in sub_sub:
-                    continue
-                sub_sub_dirs.append(sub_sub)
-            if len(sub_sub_dirs):
-                sub_dirs.append([sub_dir, sub_sub_dirs])
-        filter_list.append([e, sub_dirs])
+        if os.path.isfile(full_name):
+            filter_list[0].append(e)
+        if os.path.isdir(full_name):
+            filter_list[1].append(e)
+        filter_list.append(e)
     return filter_list
 
 
 @app.route('/view.html')
 def view():
-    filter_list = walk_results_dir()
+    filter_list = walk_results_dir(".")
     return render_template('newest_results.html', sections=filter_list)
 
 
-@app.route('/results_tree')
-def get_results_tree():
-    filter_list = walk_results_dir()
+@app.route("/get_lists_in_dir.html", methods=["POST"])
+def get_lists_in_dir():
+    directory = request.json.get("dir", None)
+    if directory is None:
+        return json.dumps({"error": "not get"}, ensure_ascii=False)
+    filter_list = walk_results_dir(directory)
     return json.dumps({"data": filter_list}, ensure_ascii=False)
 
 
