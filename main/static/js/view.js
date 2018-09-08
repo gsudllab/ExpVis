@@ -152,17 +152,17 @@ function draw_file(obj, level) {
             plot_data.push(list);
             if (contain_flag == false) {
 
-                plotted_data = [];
-                for (var i = 0; i < $("checkbox").length; i++) {
-                    if ($("checkbox").attr('checked')) {
-                        plotted_data.append(plot_data[i]);
-                    }
-                }
-                Plotly.newPlot(canvas[0], plotted_data, layout, {editable: true});
+                Plotly.newPlot(canvas[0], plot_data, layout, {editable: true});
             } else {
                 Plotly.plot(canvas[0], [list], layout, {editable: true});
             }
 
+            // plotted_data = [];
+            // for (var i = 0; i < $("checkbox").length; i++) {
+            //     if ($("checkbox").attr('checked')) {
+            //         plotted_data.append(plot_data[i]);
+            //     }
+            // }
         }
     });
 }
