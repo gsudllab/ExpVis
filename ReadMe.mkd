@@ -5,3 +5,14 @@
 editable experiment visualization
 
 only support lines/curves
+
+# TODO
+
+## features
+
+1. Hiding plotted curves by clicking checkbox
+2. Specify by a file
+
+## bugs
+
+1. Plotly.plot -> I want to add one curve, however it adds two legends every time
