@@ -8,6 +8,7 @@ var exp_chosen = null;
 var plot_data = [];
 var plot_index = [];
 var sub_names = [];
+var canvas = $("div.vis_canvas").children("div.canvas");
 
 function dir_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
@@ -131,7 +132,6 @@ function draw_file(obj, level) {
             var list = data.data;
             global_temp_data = list;
             
-            var canvas = $("div.vis_canvas").children("div.canvas");
             var layout = {
                 title: "{0} on {1}".format(data_name, size),
                 margin: {
@@ -151,10 +151,11 @@ function draw_file(obj, level) {
             $(".curves").append(new_curve);
             plot_data.push(list);
             if (contain_flag == false) {
-
                 Plotly.newPlot(canvas[0], plot_data, layout, {editable: true});
             } else {
-                Plotly.plot(canvas[0], [list], layout, {editable: true});
+                var temp = plot_data[plot_data.length - 1];
+                Plotly.purge(canvas[0]);
+                Plotly.plot(canvas[0], plot_data, layout, {editable: true});
             }
 
             // plotted_data = [];

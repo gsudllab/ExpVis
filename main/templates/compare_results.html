@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+    <style>
+        .vis_sidebar {
+            border-right: 0.5px solid;
+        }
+        .vis_canvas {
+            border: 1px;
+        }
+    </style>
+    <script>
+        
+    </script>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link href="/static/css/ListTabMenu.css" rel="stylesheet">
+
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/view.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <button onclick="$('#main-container').empty()">clear</button>
+
+    <input id="FileUpload" name="log" type="file" onchange="selectFile(this)">
+    <input type="file" id="FolderUpload" onchange="selectFolder(event)"/>
+    <div style="height: 100%; padding: 20px 0;" class="col-xs-7 vis_canvas">
+        <div>
+            <div class="btn btn-default" onclick="remove_chart()">clear</div>
+        </div>
+        <div class="canvas"></div>
+    </div>
+{% endblock %}
+
