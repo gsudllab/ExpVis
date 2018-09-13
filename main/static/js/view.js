@@ -8,7 +8,6 @@ var exp_chosen = null;
 var plot_data = [];
 var plot_index = [];
 var sub_names = [];
-var canvas = $("div.vis_canvas").children("div.canvas");
 
 function dir_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
@@ -147,6 +146,7 @@ function draw_file(obj, level) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
+            var canvas = $("div.vis_canvas").children("div.canvas");
             var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
             $(".curves").append(new_curve);
             plot_data.push(list);
