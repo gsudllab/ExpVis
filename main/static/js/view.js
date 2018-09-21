@@ -9,6 +9,8 @@ var plot_data = [];
 var plot_index = [];
 var sub_names = [];
 var real_time_data = [];
+var group_color = {};
+var groups = [];
 
 function dir_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
@@ -124,6 +126,7 @@ function draw_file(obj, level) {
             sub_names.push(metric);
         }
     }
+
     $.ajax({
         method: "post",
         url : "/get_result_array",
@@ -133,6 +136,7 @@ function draw_file(obj, level) {
         success : function (data){
             var list = data.data;
             global_temp_data = list;
+            var colors = ["red", "blue", "orange", "brown", "pink", "gray", "black"];
             
             var layout = {
                 title: "{0} on {1}".format(data_name, size),
@@ -150,6 +154,13 @@ function draw_file(obj, level) {
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
             list["legendgroup"] = group_name;
+            if (!(group_name in group_color)) {
+                group_color[group_name] = colors[groups.length];
+                groups.push(group_name);
+            } else {
+                list["showlegend"] = false;
+            }
+            list["maker"] = {color:group_color[group_name], line: {color: group_color[group_name]}};
 
             var canvas = $("div.vis_canvas").children("div.canvas");
             var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
@@ -177,6 +188,8 @@ function remove_chart() {
     var canvas = $("div.vis_canvas").children("div.canvas");
     plot_data = [];
     sub_names = [];
+    group_color = {};
+    groups = [];
     $(".curves").empty();
     Plotly.purge(canvas[0]);
 }
