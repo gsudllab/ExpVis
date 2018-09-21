@@ -8,6 +8,7 @@ var exp_chosen = null;
 var plot_data = [];
 var plot_index = [];
 var sub_names = [];
+var real_time_data = [];
 
 function dir_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
@@ -57,7 +58,7 @@ function choose_directory(obj, level, name) {
                 var span = spans[i];
                 span.remove();
             }
-            var new_span = $("<span></span");
+            var new_span = $("<span></span>");
             var new_select = $("<select></select>");
             new_select.attr("onchange", "choose_directory(this, {0}, '')".format(level+1));
             new_select.append('<option disabled selected value="0">default</option>"');
@@ -77,7 +78,9 @@ function draw_file(obj, level) {
     var path = ".";
     var data_name = "";
     var size = "";
+    var group_name = "";
     for (var i = 1; i < level; i++) {
+        group_name = $(levels[i-1]).val();
         path += "/" + $(levels[i-1]).val();
         var parts = $(levels[i-1]).val().split("=");
         if (parts.length != 2)
@@ -146,6 +149,8 @@ function draw_file(obj, level) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
+            list["legendgroup"] = group_name;
+
             var canvas = $("div.vis_canvas").children("div.canvas");
             var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
             $(".curves").append(new_curve);
@@ -174,4 +179,25 @@ function remove_chart() {
     sub_names = [];
     $(".curves").empty();
     Plotly.purge(canvas[0]);
+}
+
+function realtime_query() {
+    $.ajax({
+        method: "post",
+        url : "/realtime_query",
+        contentType: 'application/json',
+        dataType: "json",
+        success : function (data){
+            var set = data.data;
+            var interval = data.x;
+            real_time_data = data;
+            console.log(set);
+            var r_plot_data = [];
+            for (var ele in set) {
+                var exps = set[ele];
+                for (var i in exps) {
+                }
+            }
+        }
+    });
 }

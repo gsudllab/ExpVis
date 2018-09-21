@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import os
 import json
+import getpass
 
 from flask import request, render_template
 import numpy as np
@@ -36,6 +37,43 @@ def walk_results_dir(dir_path):
             filter_list[1].append(e)
         filter_list.append(e)
     return filter_list
+
+
+@app.route('/realtime.html')
+def realtime():
+    return render_template('realtime.html')
+
+
+@app.route('/realtime_query', methods=['POST'])
+def realtime_query():
+    listen_process_file = os.path.join(os.environ.get("HOME", "~"), "project/research/realtime.txt")
+    dirs = []
+    with open(listen_process_file) as fp:
+        for e in fp.readlines():
+            if not e.strip():
+                continue
+            dirs.append(e.strip())
+    if len(dirs) == 0:
+        return json.dumps({"data": {}}, ensure_ascii=False)
+    filter_list = {}
+    for d in dirs:
+        dir = os.path.join(os.environ.get("HOME", "~"), "project/results", d)
+        marker = dir.split("_")[-2]
+        filter_list[d] = []
+        exp_result = []
+        exp = 0
+        log_file = [e for e in filter(lambda x: marker in x, os.listdir(dir))][0]
+        app.logger.info(log_file)
+        with open(os.path.join(dir, log_file)) as fp:
+            for line in fp.readlines():
+                if "loss and acc" in line:
+                    exp_result.append(line.strip().split()[-4:])
+                if "single round" in line:
+                    filter_list[d].append(exp_result[:])
+                    exp += 1
+                    exp_result = []
+
+    return json.dumps({"data": filter_list, "x": 40}, ensure_ascii=False)
 
 
 @app.route('/view.html')

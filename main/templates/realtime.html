@@ -1,42 +1,45 @@
 {% extends "layout.html" %}
 {% block body %}
-<style>
-.tab li em {
-    cursor: pointer;
-}
-.fa-search {
-    cursor: pointer;
-}
-</style>
-<header class="site-header">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>
-                LSTM DEBUG
-            </h1>
+    <style>
+        .vis_sidebar {
+            border-right: 0.5px solid;
+        }
+        .vis_canvas {
+            border: 1px;
+        }
+    </style>
+    <script>
+        
+    </script>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/view.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <div style="height: 100%; padding: 0;">
+        <div style="height: 100%; padding: 20px 0;" class="col-xs-3 vis_sidebar dir_list">
+            <div>
+                file:
+            </div>
+            <hr>
+            <div>
+                directory:
+            </div>
+            <div id="sub_dirs">
+
+            </div>
+        </div>
+        <div style="padding: 20px 0;" class="col-xs-8 vis_canvas">
+            <div class="processes">
+
+            </div>
+            <div style="height: 100%;" class="canvas">
+            </div>
         </div>
     </div>
-</header>
-<main class="packages-list-container" id="all-packages">
-
-<button onclick="$('#main-container').empty()">clear</button>
-
-<input id="FileUpload" name="log" type="file" onchange="selectFile(this)">
-<input type="file" id="FolderUpload" onchange="selectFolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple />
-
-
-
-<div class="container-fluid" id="main-container">
-	<div class="container-fluid" id="index-container">
-		<input type="text">
-	</div>
-
-	<div id="tester" class="container-fluid" style="width:90%;height:800px;">
-	    
-	</div>
-</div>
-</main>
-<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
-<script src="https://cdn.bootcss.com/plotly.js/1.38.0/plotly.min.js"></script>
-<script src="/static/js/index.js?v={{version}}"></script>
+    <script>
+        realtime_query();
+        // setInterval("realtime_query()",1000);
+    </script>
 {% endblock %}
+
