@@ -29,7 +29,7 @@ def walk_results_dir(dir_path):
     lists = sorted(os.listdir(directory))
     for e in lists:
         full_name = os.path.join(directory, e)
-        if "copy" in e or "running" in e or ".png" in e or "txt" in e:
+        if "copy" in e or "running" in e or ".png" in e:
             continue
         if os.path.isfile(full_name):
             filter_list[0].append(e)
@@ -37,11 +37,6 @@ def walk_results_dir(dir_path):
             filter_list[1].append(e)
         filter_list.append(e)
     return filter_list
-
-
-@app.route('/realtime.html')
-def realtime():
-    return render_template('realtime.html')
 
 
 @app.route('/realtime_query', methods=['POST'])
@@ -106,7 +101,7 @@ def get_all_npy(sub):
     lists = sorted(os.listdir(directory))
     filter_list = []
     for e in lists:
-        if e.endswith(".npy"):
+        if e.endswith(".npy") or e.endswith(".npy.txt"):
             filter_list.append(e)
     for e in lists:
         if e != "npy":
@@ -147,7 +142,10 @@ def get_result_array():
     if os.path.isfile(param_file):
         with open(param_file) as fp:
             params = json.load(fp)
-    array = np.load(full_name)
+    if file_name.endswith(".npy"):
+        array = np.load(full_name)
+    elif file_name.endswith(".npy.txt"):
+        array = np.loadtxt(full_name, delimiter=',')
     x = np.arange(len(array))
     if "queries" in params:
         x *= params["queries"]

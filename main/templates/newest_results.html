@@ -32,6 +32,9 @@
         </div>
         <div style="height: 100%; padding: 20px 0;" class="col-xs-3 vis_sidebar dir_list">
             <div>
+                <div class="btn btn-default" onclick="load_list()">load files list</div>
+            </div>
+            <div>
                 file:
             </div>
             <div id="sub_files">
@@ -50,9 +53,10 @@
         <div style="padding: 20px 0;" class="col-xs-8 vis_canvas">
             <div>
                 <div class="btn btn-default" onclick="remove_chart()">clear</div>
+                <a id="download" class="btn btn-default" href="#">save files list</a>
             </div>
             <div style="height: 100%;" class="canvas"></div>
-            <div class="curves"></div>
+            <div class="curves" id="curves"></div>
         </div>
     </div>
 {% endblock %}
