@@ -212,7 +212,8 @@ function save_names() {
     a.dataset.downloadurl = [MIME_TYPE, a.download, a.href].join(':');
 }
 
-function load_list() {
+function load_list(files) {
+    console.log("load list");
     var reader = new FileReader();
     reader.onload = function (event) {
         var content = event.target.result;
@@ -221,10 +222,11 @@ function load_list() {
             load_file(data[i]);
         }
     }
+    reader.readAsText(files[0]);
 }
 
 function load_file(file_path) {
-    var file_name = file_path.split("/")[file.split("/").length-1];
+    var file_name = file_path.split("/")[file_path.split("/").length-1];
     var file_parts = file_name.split("_")
     var metric = ""
     var contain_flag = false;
@@ -261,7 +263,7 @@ function load_file(file_path) {
             global_temp_data = list;
 
             var layout = {
-                title: "",
+                title: "place holder",
                 margin: {
                     b: 50,
                     t: 50

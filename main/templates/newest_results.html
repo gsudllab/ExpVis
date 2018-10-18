@@ -31,8 +31,11 @@
             </span>
         </div>
         <div style="height: 100%; padding: 20px 0;" class="col-xs-3 vis_sidebar dir_list">
-            <div>
-                <div class="btn btn-default" onclick="load_list()">load files list</div>
+            <div class="btn btn-default">
+                <span>
+                    load files list
+                </span>
+                <input id="uploadFile" type="file" onchange="load_list(this.files)">
             </div>
             <div>
                 file:
