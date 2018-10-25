@@ -106,11 +106,11 @@ function draw_file(obj, level) {
     var metric = ""
     var contain_flag = false;
     var canvas_id = 0;
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < Math.min(file_parts.length, 2); i++) {
         if (file_parts[i] == "")
             continue;
         var prefix = file_parts[i].substring(0, 3);
-        if (prefix == "val" || prefix == "tes" || prefix == "tra" || prefix == "de" || prefix == "ste") {
+        if (prefix == "val" || prefix == "tes" || prefix == "tra" || prefix == "de" || prefix == "ste" || prefix == "par") {
             continue;
         }
         metric = file_parts[i];
@@ -134,11 +134,17 @@ function draw_file(obj, level) {
         data: JSON.stringify({"file": file_path}),
         success : function (data){
             var list = data.data;
+
+            if (list.x.length == 0) {
+                $("#text").html(list.content);
+                return;
+            }
             global_temp_data = list;
+
             var colors = ["red", "blue", "orange", "brown", "pink", "gray", "black"];
 
             var layout = {
-                title: "{0} on {1}".format(data_name, size),
+                title: "{0} size={1}".format(data_name, size),
                 margin: {
                     b: 50,
                     t: 50
@@ -218,14 +224,16 @@ function load_list(files) {
     reader.onload = function (event) {
         var content = event.target.result;
         var data = JSON.parse(content);
-        for (var i = 0; i < data.length; i++) {
-            load_file(data[i]);
-        }
+        load_file(data, 0);
     }
     reader.readAsText(files[0]);
 }
 
-function load_file(file_path) {
+function load_file(f_list, index) {
+    if (i >= f_list.length) {
+        return;
+    }
+    var file_path = f_list[index];
     var file_name = file_path.split("/")[file_path.split("/").length-1];
     var file_parts = file_name.split("_")
     var metric = ""
@@ -257,6 +265,7 @@ function load_file(file_path) {
         url : "/get_result_array",
         contentType: 'application/json',
         dataType: "json",
+        async:false,
         data: JSON.stringify({"file": file_path}),
         success : function (data){
             var list = data.data;
@@ -289,6 +298,7 @@ function load_file(file_path) {
                 Plotly.purge(canvas[0]);
                 Plotly.plot(canvas[0], plot_data, layout, {editable: true});
             }
+            load_file(f_list, index+1)
         }
     });
 

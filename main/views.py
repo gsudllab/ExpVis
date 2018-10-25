@@ -142,17 +142,23 @@ def get_result_array():
     if os.path.isfile(param_file):
         with open(param_file) as fp:
             params = json.load(fp)
+    array = []
     if file_name.endswith(".npy"):
         array = np.load(full_name)
-    elif file_name.endswith(".npy.txt"):
+
+    if file_name.endswith(".npy.txt"):
         array = np.loadtxt(full_name, delimiter=',')
+    content = ""
+    if file_name[-4:] in [".txt", "json"]:
+        with open(full_name) as fp:
+            content = fp.read()
     x = np.arange(len(array))
     if "queries" in params:
         x *= params["queries"]
     l_x = []
     for e in x:
         l_x.append(int(e))
-    return json.dumps({"data": {"x": l_x, "y":list(array)}}, ensure_ascii=False)
+    return json.dumps({"data": {"x": l_x, "y": list(array), "content": content}}, ensure_ascii=False)
 
 
 @app.route('/uploadFile', methods=['POST'])
