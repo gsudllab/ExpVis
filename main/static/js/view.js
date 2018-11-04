@@ -81,8 +81,8 @@ function draw_file(obj, level) {
     var data_name = "";
     var size = "";
     var group_name = "";
+    group_name = $(levels[level-2]).val();
     for (var i = 1; i < level; i++) {
-        group_name = $(levels[i-1]).val();
         path += "/" + $(levels[i-1]).val();
         var parts = $(levels[i-1]).val().split("=");
         if (parts.length != 2)
@@ -153,14 +153,16 @@ function draw_file(obj, level) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
-            list["legendgroup"] = group_name;
-            if (!(group_name in group_color)) {
-                group_color[group_name] = colors[groups.length];
-                groups.push(group_name);
-            } else {
-                list["showlegend"] = false;
+            if (group_name != "npy") {
+                list["legendgroup"] = group_name;
+                if (!(group_name in group_color)) {
+                    group_color[group_name] = colors[groups.length];
+                    groups.push(group_name);
+                } else {
+                    list["showlegend"] = false;
+                }
+                list["maker"] = {color:group_color[group_name], line: {color: group_color[group_name]}};
             }
-            list["maker"] = {color:group_color[group_name], line: {color: group_color[group_name]}};
 
             var canvas = $("div.vis_canvas").children("div.canvas");
             var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
