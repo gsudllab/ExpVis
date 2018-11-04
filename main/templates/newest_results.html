@@ -31,6 +31,12 @@
             </span>
         </div>
         <div style="height: 100%; padding: 20px 0;" class="col-xs-3 vis_sidebar dir_list">
+            <div class="btn btn-default">
+                <span>
+                    load files list
+                </span>
+                <input id="uploadFile" type="file" onchange="load_list(this.files)">
+            </div>
             <div>
                 file:
             </div>
@@ -46,13 +52,21 @@
             <a class="btn btn-default col-md-12" href="javascript:void(0)" role="button" onclick="choose_directory(this, 1, '{{ sections[1][i] }}')">{{ sections[1][i] }}</a>
             {% endfor %}
             </div>
+            <hr>
+            <div>
+                text file:
+            </div>
+            <div>
+                <textarea id="text" class="col-md-12"></textarea>
+            </div>
         </div>
         <div style="padding: 20px 0;" class="col-xs-8 vis_canvas">
             <div>
                 <div class="btn btn-default" onclick="remove_chart()">clear</div>
+                <a id="download" class="btn btn-default" href="#">save files list</a>
             </div>
             <div style="height: 100%;" class="canvas"></div>
-            <div class="curves"></div>
+            <div class="curves" id="curves"></div>
         </div>
     </div>
 {% endblock %}
