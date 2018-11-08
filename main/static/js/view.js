@@ -158,6 +158,7 @@ function draw_file(obj, level) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
+
             // if (group_name != "npy") {
             //     list["legendgroup"] = group_name;
             //     if (!(group_name in group_color)) {
@@ -169,6 +170,7 @@ function draw_file(obj, level) {
             //     list["maker"] = {color:group_color[group_name], line: {color: group_color[group_name]}};
             //
             // }
+
             var canvas = $("div.vis_canvas").children("div.canvas");
             var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
             $(".curves").append(new_curve);
