@@ -243,7 +243,7 @@ function load_file(f_list, index) {
         if (file_parts[i] == "")
             continue;
         var prefix = file_parts[i].substring(0, 3);
-        if (prefix == "val" || prefix == "tes" || prefix == "tra" || prefix == "de" || prefix == "ste") {
+        if (prefix == "val" || prefix == "tes" || prefix == "tra" || prefix == "de" || prefix == "ste" || prefix == "par") {
             continue;
         }
         metric = file_parts[i];

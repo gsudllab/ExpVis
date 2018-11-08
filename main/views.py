@@ -29,7 +29,7 @@ def walk_results_dir(dir_path):
     lists = sorted(os.listdir(directory))
     for e in lists:
         full_name = os.path.join(directory, e)
-        if "copy" in e or "running" in e or ".png" in e:
+        if "copy" in e or ".png" in e:
             continue
         if os.path.isfile(full_name):
             filter_list[0].append(e)
@@ -91,7 +91,7 @@ def get_all_experiment(sub):
     lists = sorted(os.listdir(directory))
     filter_list = []
     for e in lists:
-        if not e.endswith("running"):
+        if "copy" not in e:
             filter_list.append(e)
     return filter_list
 
