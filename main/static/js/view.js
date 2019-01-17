@@ -149,6 +149,7 @@ function draw_file(obj, level) {
                     b: 50,
                     t: 50
                 },
+                width: 600,
                 showlegend: true,
             };
             for (var i = 0; i < sub_names.length; i++) {
