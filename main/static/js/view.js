@@ -11,6 +11,15 @@ var sub_names = [];
 var real_time_data = [];
 var group_color = {};
 var groups = [];
+var layout = {
+    title: "place holder",
+    margin: {
+        b: 50,
+        t: 50
+    },
+    width: 700,
+    showlegend: true,
+};
 
 function dir_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
@@ -20,6 +29,13 @@ function dir_button(level, name) {
 function file_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="draw_file(this, {0})">{1}</a>';
     return template.format(level, name);
+}
+
+function up_dir() {
+    var spans = $("#dir_path").children("span");
+    var levels = spans.children("select");
+        
+    choose_directory(null, levels.length - 3, levels[levels.length-3].value);
 }
 
 function choose_directory(obj, level, name) {
@@ -141,15 +157,15 @@ function draw_file(obj, level) {
             }
             global_temp_data = list;
 
-            var colors = ["red", "blue", "orange", "brown", "pink", "gray", "black"];
+            var colors = ["red", "blue", "orange", "brown", "pink", "gray", "black", "grey"];
 
-            var layout = {
+            layout = {
                 title: "{0} size={1}".format(data_name, size),
                 margin: {
                     b: 50,
                     t: 50
                 },
-                width: 600,
+                width: 700,
                 showlegend: true,
             };
             for (var i = 0; i < sub_names.length; i++) {
@@ -159,40 +175,48 @@ function draw_file(obj, level) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
+            list.marker = {color: colors[plot_data.length % 8]}
 
-            // if (group_name != "npy") {
-            //     list["legendgroup"] = group_name;
-            //     if (!(group_name in group_color)) {
-            //         group_color[group_name] = colors[groups.length];
-            //         groups.push(group_name);
-            //     } else {
-            //         list["showlegend"] = false;
-            //     }
-            //     list["maker"] = {color:group_color[group_name], line: {color: group_color[group_name]}};
-            //
-            // }
-
-            var canvas = $("div.vis_canvas").children("div.canvas");
-            var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
+            var curve_ins = '<div><input type="checkbox" class="checked" style="display: block" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
+            var color_ins = '<span style="float: left">color: <input class="colors" style="display: block" type="text"/></span>';
+            var style_ins = '<span>style: <input class="styles" style="display: block" type="text" placeholder="solid, dot, dash, longdash, dashdot"/></span>';
+            var new_curve = '<div class="col-md-12">{0}{1}{2}</div>'.format(curve_ins, color_ins, style_ins);
             $(".curves").append(new_curve);
             save_names();
             plot_data.push(list);
-            if (contain_flag == false) {
-                Plotly.newPlot(canvas[0], plot_data, layout, {editable: true});
-            } else {
-                var temp = plot_data[plot_data.length - 1];
-                Plotly.purge(canvas[0]);
-                Plotly.plot(canvas[0], plot_data, layout, {editable: true});
-            }
-
-            // plotted_data = [];
-            // for (var i = 0; i < $("checkbox").length; i++) {
-            //     if ($("checkbox").attr('checked')) {
-            //         plotted_data.append(plot_data[i]);
-            //     }
-            // }
+            plot_curves(contain_flag);
         }
     });
+}
+
+function plot_curves(contain_flag) {
+    var canvas = $("div.vis_canvas").children("div.canvas");
+    var lines = [];
+    var checked = $(".checked");
+    var styles = $(".styles");
+    var colors = $(".colors");
+    for (var i in checked) {
+        if (styles[i].value) {
+            plot_data[i].line = {dash: styles[i].value};
+        }
+        if (colors[i].value) {
+            plot_data[i].marker = {color: colors[i].value};
+        }
+        if (checked[i].checked) {
+            lines.push(plot_data[i]);
+        }
+    }
+
+    if (contain_flag == false) {
+        Plotly.newPlot(canvas[0], lines, layout, {editable: true});
+    } else {
+        Plotly.purge(canvas[0]);
+        Plotly.plot(canvas[0], lines, layout, {editable: true});
+    }
+}
+
+function update_chart() {
+    plot_curves(false);
 }
 
 function remove_chart() {
@@ -206,11 +230,15 @@ function remove_chart() {
 }
 
 function save_names() {
-    var curves = $("#curves").children();
+    var curves = $(".checked");
+    var styles = $(".styles");
+    var colors = $(".colors");
     var file_list = [];
     for (var i = 0; i < curves.length; i++) {
-        var file_path = $(curves[i]).text();
-        file_list.push(file_path);
+        var file_path = $(curves[i]).parent().text();
+        var style = styles[i].value;
+        var color = colors[i].value;
+        file_list.push([file_path, color, style]);
     }
     var data = JSON.stringify(file_list);
     var bb = new Blob([data], {type: MIME_TYPE});
@@ -236,7 +264,7 @@ function load_file(f_list, index) {
     if (i >= f_list.length) {
         return;
     }
-    var file_path = f_list[index];
+    var file_path = f_list[index][0];
     var file_name = file_path.split("/")[file_path.split("/").length-1];
     var file_parts = file_name.split("_")
     var metric = ""
@@ -274,7 +302,7 @@ function load_file(f_list, index) {
             var list = data.data;
             global_temp_data = list;
 
-            var layout = {
+            layout = {
                 title: "place holder",
                 margin: {
                     b: 50,
@@ -289,18 +317,38 @@ function load_file(f_list, index) {
             }
             list["xaxis"] = 'x' + (canvas_id + 1)
             list["yaxis"] = 'y' + (canvas_id + 1)
-            var canvas = $("div.vis_canvas").children("div.canvas");
-            var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
+            var colors = ["red", "blue", "orange", "brown", "pink", "gray", "black", "grey"];
+            if (f_list[index][1]) {
+                list.marker = {color: f_list[index][1]};
+            }
+            else {
+                list.marker = {color: colors[plot_data.length % 8]};
+            }
+            if (f_list[index][1]) {
+                list.line = {dash: f_list[index][2]};
+            }
+
+            var curve_ins = '<div><input type="checkbox" class="checked" style="display: block" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
+            var color_ins = '<span style="float: left">color: <input class="colors" style="display: block" type="text" value="{0}"/></span>'.format(f_list[index][1]);
+            var style_ins = '<span>style: <input class="styles" style="display: block" type="text" value="{0}" placeholder="solid, dot, dash, longdash, dashdot"/></span>'.format(f_list[index][2]);
+            var new_curve = '<div class="col-md-12">{0}{1}{2}</div>'.format(curve_ins, color_ins, style_ins);
             $(".curves").append(new_curve);
             save_names();
             plot_data.push(list);
-            if (contain_flag == false) {
-                Plotly.newPlot(canvas[0], plot_data, layout, {editable: true});
-            } else {
-                var temp = plot_data[plot_data.length - 1];
-                Plotly.purge(canvas[0]);
-                Plotly.plot(canvas[0], plot_data, layout, {editable: true});
-            }
+            plot_curves(contain_flag);
+
+            // var canvas = $("div.vis_canvas").children("div.canvas");
+            // var new_curve = '<div class="btn btn-default col-md-12"><input type="checkbox" checked value="{0}"/>{1}</div>'.format(plot_data.length, file_path);
+            // $(".curves").append(new_curve);
+            // save_names();
+            // plot_data.push(list);
+            // if (contain_flag == false) {
+            //     Plotly.newPlot(canvas[0], plot_data, layout, {editable: true});
+            // } else {
+            //     var temp = plot_data[plot_data.length - 1];
+            //     Plotly.purge(canvas[0]);
+            //     Plotly.plot(canvas[0], plot_data, layout, {editable: true});
+            // }
             load_file(f_list, index+1)
         }
     });

@@ -77,6 +77,12 @@ def view():
     return render_template('newest_results.html', sections=filter_list)
 
 
+@app.route('/new_view.html')
+def new_view():
+    filter_list = walk_results_dir(".")
+    return render_template('results_show.html', sections=filter_list)
+
+
 @app.route("/get_lists_in_dir.html", methods=["POST"])
 def get_lists_in_dir():
     directory = request.json.get("dir", None)
@@ -149,7 +155,7 @@ def get_result_array():
     if file_name.endswith(".npy.txt"):
         array = np.loadtxt(full_name, delimiter=',')
     content = ""
-    if file_name[-4:] in [".txt", "json"]:
+    if file_name[-4:] in [".txt", "json", ".log"]:
         with open(full_name) as fp:
             content = fp.read()
     x = np.arange(len(array))
