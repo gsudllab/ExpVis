@@ -26,6 +26,16 @@ function dir_button(level, name) {
     return template.format(level, name, name);
 }
 
+function del_dir_button(level, name) {
+    var template = '<a class="btn btn-default col-md-4" style="white-space: normal;" href="#" role="button" onclick="operate_directory(this, {0}, \'{1}\', 0)">delete</a>';
+    return template.format(level, name);
+}
+
+function rename_dir_button(level, name) {
+    var template = '<a class="btn btn-default col-md-4" style="white-space: normal;" href="#" role="button" onclick="operate_directory(this, {0}, \'{1}\', 1)">name</a>';
+    return template.format(level, name);
+}
+
 function file_button(level, name) {
     var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="draw_file(this, {0})">{1}</a>';
     return template.format(level, name);
@@ -68,8 +78,19 @@ function choose_directory(obj, level, name) {
             }
             $("#sub_dirs").empty();
             for (var i in list[1]) {
+                var div = $('<div class="col-md-12"></div>')
                 var temp = dir_button(level+1, list[1][i]);
-                $("#sub_dirs").append(temp)
+                div.append(temp);
+                if (list[1][i].indexOf("|") > -1) {
+                    temp = del_dir_button(level+1, list[1][i]);
+                    div.append(temp);
+                    temp = rename_dir_button(level+1, list[1][i]);
+                    div.append(temp);
+                } else {
+                    temp = del_dir_button(level+1, list[1][i], 4);
+                    div.append(temp);
+                }
+                $("#sub_dirs").append(div);
             }
 
             for (var i = level; i < spans.length; i++) {
@@ -86,6 +107,32 @@ function choose_directory(obj, level, name) {
             new_span.append(new_select);
             new_span.append("<span>/</span>")
             $("#dir_path").append(new_span);
+        }
+    });
+}
+
+function operate_directory(obj, level, name, op) {
+    var spans = $("#dir_path").children("span");
+    var levels = spans.children("select");
+    var path = "."
+    for (var i = 1; i < level; i++) {
+        path += "/" + $(levels[i-1]).val();
+    }
+    if (name == "") {
+        path += "/" + $(obj).val();
+    } else {
+        $(levels[level-1]).val(name);
+        path += "/" + name;
+    }
+    console.log(path);
+    $.ajax({
+        method: "post",
+        url : "/operate_dir",
+        contentType: 'application/json',
+        dataType: "json",
+        data: JSON.stringify({"dir": path, "op": op}),
+        success : function (data){
+            alert(data.info);
         }
     });
 }
