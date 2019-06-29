@@ -192,14 +192,14 @@ def operate_dir():
     dir_path = request.json.get('dir', None)
     directory = os.path.join(os.environ['HOME'], 'project/runs', dir_path)
     op = request.json.get('op', None)
-    app.logger.info(type(op))
 
     try:
         if op == 1:
             if "|" not in directory:
                 return json.dumps({'info': "Not Rename"}, ensure_ascii=False)
-            os.rename(directory, directory.split("|")[1])
-            return json.dumps({'info': "Rename it successfully!!!"}, ensure_ascii=False)
+            new_dir = os.path.join(os.environ['HOME'], 'project/runs', dir_path.split("|")[1])
+            os.rename(directory, new_dir)
+            return json.dumps({'info': "Rename it successfully!!!", 'name': dir_path.split("|")[1]}, ensure_ascii=False)
         else:
             shutil.rmtree(directory)
             return json.dumps({'info': "Delete it successfully!!!"}, ensure_ascii=False)

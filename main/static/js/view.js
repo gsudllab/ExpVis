@@ -22,17 +22,17 @@ var layout = {
 };
 
 function dir_button(level, name) {
-    var template = '<a class="btn btn-default col-md-12" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
+    var template = '<a class="btn btn-default col-md-12 dir" style="white-space: normal;" href="#" role="button" onclick="choose_directory(this, {0}, \'{1}\')">{2}</a>';
     return template.format(level, name, name);
 }
 
 function del_dir_button(level, name) {
-    var template = '<a class="btn btn-default col-md-4" style="white-space: normal;" href="#" role="button" onclick="operate_directory(this, {0}, \'{1}\', 0)">delete</a>';
+    var template = '<a class="btn btn-default col-md-4" style="white-space: normal;" href="##" role="button" onclick="operate_directory(this, {0}, \'{1}\', 0)">delete</a>';
     return template.format(level, name);
 }
 
 function rename_dir_button(level, name) {
-    var template = '<a class="btn btn-default col-md-4" style="white-space: normal;" href="#" role="button" onclick="operate_directory(this, {0}, \'{1}\', 1)">name</a>';
+    var template = '<a class="btn btn-default col-md-4" style="white-space: normal;" href="##" role="button" onclick="operate_directory(this, {0}, \'{1}\', 1)">name</a>';
     return template.format(level, name);
 }
 
@@ -115,6 +115,7 @@ function operate_directory(obj, level, name, op) {
     var spans = $("#dir_path").children("span");
     var levels = spans.children("select");
     var path = "."
+    var div = $(obj);
     for (var i = 1; i < level; i++) {
         path += "/" + $(levels[i-1]).val();
     }
@@ -124,7 +125,7 @@ function operate_directory(obj, level, name, op) {
         $(levels[level-1]).val(name);
         path += "/" + name;
     }
-    console.log(path);
+    
     $.ajax({
         method: "post",
         url : "/operate_dir",
@@ -132,7 +133,17 @@ function operate_directory(obj, level, name, op) {
         dataType: "json",
         data: JSON.stringify({"dir": path, "op": op}),
         success : function (data){
-            alert(data.info);
+            console.log(div);
+            if (data.info.indexOf("success") > -1) {
+                if (op == 0) {
+                    div.parent().remove()
+                } else {
+                    div.parent().children(".dir").html(data.name);
+                }
+                
+            } else {
+                alert(data.info);
+            }
         }
     });
 }
