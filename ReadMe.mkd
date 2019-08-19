@@ -1,7 +1,27 @@
 # ExpVis
 
+curves
+
 ![ExpVis](https://raw.githubusercontent.com/sndnyang/ExpVis/master/UI.png)
+
+parameters
+
+![ExpVis](https://raw.githubusercontent.com/sndnyang/ExpVis/master/para.png)
+
+LOG:
+
+![ExpVis](https://raw.githubusercontent.com/sndnyang/ExpVis/master/log.png)
 
 editable experiment visualization
 
 only support lines/curves
+
+# TODO
+
+## features
+
+1. filter
+
+## bugs
+
+1. it seems not stable. https://cdn.bootcss.com/
