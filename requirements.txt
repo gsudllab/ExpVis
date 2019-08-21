@@ -7,3 +7,4 @@ plotly==3.2.1
 six==1.11.0
 traitlets==4.3.2
 Werkzeug==0.14.1
+werkzeug>=0.15.3
